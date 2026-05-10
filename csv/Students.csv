@@ -1,4 +1,4 @@
-Student name,Student id,Programme,Year,Graduated
+studentName,studentID,program,year,graduated
 Student 1,19970308-0000,10054,2017,False
 Student 2,19960213-0001,10011,2016,False
 Student 3,19960328-0002,10013,2019,False
