@@ -90,7 +90,7 @@ def create_departments():
 
 
 def create_divisions():
-    column_headers = ["divisionName"]
+    column_headers = ["divisionName", "departmentName"]
     courses_data = get_data_from_csv("csv/Courses.csv")
     division_dict = {}
     for row in courses_data:
@@ -100,7 +100,7 @@ def create_divisions():
     writer = csv.DictWriter(f, fieldnames=column_headers)
     writer.writeheader()
     for key in division_dict:
-        writer.writerow({"divisionName": key})
+        writer.writerow({"divisionName": key, "departmentName": key[0:2]})
     f.close()
     return
 
@@ -251,50 +251,42 @@ def create_dependencies(all_data, entity_maps, output_file):
             course_code = row.get("courseCode")
             department_name = row.get("departmentName")
             division_name = row.get("divisionName")
-
+            program_code = row.get("programCode")
+            # Course to Department Relation
             if course_code and department_name:
-                course_id = entity_maps["Courses"].get(course_code)
-                department_id = entity_maps["Departments"].get(department_name)
+                course_instance = entity_maps["Courses"].get(course_code)
+                department_instance = entity_maps["Departments"].get(department_name)
 
-                if course_id and department_id:
-                    output_file.write(f"ex:{course_id} ex:hasDepartment ex:{department_id} .\n")
-                    
+                if course_instance and department_instance:
+                    output_file.write(f"ex:{course_instance} ex:hasDepartment ex:{department_instance} .\n")
+            # Course to Division Relation
             if course_code and division_name:
-                course_id = entity_maps["Courses"].get(course_code)         
-                division_id = entity_maps["Divisions"].get(division_name)
+                course_instance = entity_maps["Courses"].get(course_code)
+                division_instance = entity_maps["Divisions"].get(division_name)
                 
-                if course_id and division_id:
-                 output_file.write(f"ex:{course_id} ex:hasDivision ex:{division_id} .\n")
-    
+                if course_instance and division_instance:
+                 output_file.write(f"ex:{course_instance} ex:hasDivision ex:{division_instance} .\n")
+            # Course to Programs Relation
+            if course_code and program_code:
+                course_instance = entity_maps["Courses"].get(course_code)
+                program_instance = entity_maps["Programs"].get(program_code)
+                
+                if course_instance and program_instance:
+                    output_file.write(f"ex:{course_instance} ex:hasOwner ex:{program_instance} .\n")
+            
     # Add All Divisions Relations
     if "Divisions" in all_data:
             for row in all_data["Divisions"]:
                 division_name = row.get("divisionName")
-                course_code = row.get("courseCode")
                 department_name = row.get("departmentName")
-                senior_teachers = row.get("seniorTeachers")
-
-
+                # Division to Department Relation
                 if division_name and department_name:
-                    division_id = entity_maps["Divisions"].get(division_name)
-                    department_id = entity_maps["Departments"].get(department_name)
+                    division_instance = entity_maps["Divisions"].get(division_name)
+                    department_instance = entity_maps["Departments"].get(department_name)
 
-                    if division_id and department_id:
-                        output_file.write(f"ex:{division_id} ex:hasDepartment ex:{department_id} .\n")
+                    if division_instance and department_instance:
+                        output_file.write(f"ex:{division_instance} ex:hasDepartment ex:{department_instance} .\n")
                         
-                if division_name  and course_code:
-                    course_id = entity_maps["Courses"].get(course_code)         
-                    division_id = entity_maps["Divisions"].get(division_name)
-                    
-                    if course_id and division_id:
-                        output_file.write(f"ex:{course_id} ex:hasDivision ex:{division_id} .\n")
-                if division_name  and senior_teachers:
-                    st_id = entity_maps["Senior_Teachers"].get(senior_teachers)         
-                    division_id = entity_maps["Divisions"].get(division_name)
-                    
-                    if st_id and division_id:
-                        output_file.write(f"ex:{st_id} ex:hasDivision ex:{division_id} .\n")
-            
             
 
 def main():
