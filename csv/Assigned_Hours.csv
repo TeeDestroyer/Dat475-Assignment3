@@ -1,4 +1,4 @@
-courseCode,studyPeriod,academicYear,teacherID,hours,courseInstance
+courseCode,studyPeriod,academicYear,teacherID,hours,instanceID
 1204,1.0,2013-2014,19620522-0023,240.0,I-1
 1204,1.0,2013-2014,19790708-0041,100.0,I-1
 1204,1.0,2013-2014,19930221-0139,140.0,I-1
